@@ -1,0 +1,12 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const { analyze } = require('../src/services/queryService');
+const good = `SELECT cliente.Nome, pedido.DataPedido FROM cliente JOIN pedido ON cliente.idCliente = pedido.Cliente_idCliente WHERE pedido.ValorTotalPedido > 500`;
+test('consulta válida com JOIN', () => assert.equal(analyze(good).valida, true));
+test('ignora maiúsculas/minúsculas', () => assert.equal(analyze('select nOmE from CLIENTE').valida, true));
+test('rejeita tabela inexistente', () => assert.throws(() => analyze('SELECT Nome FROM pessoa'), { kind: 'Semântica' }));
+test('rejeita coluna inexistente', () => assert.throws(() => analyze('SELECT salario FROM cliente'), { kind: 'Semântica' }));
+test('rejeita coluna ambígua', () => assert.throws(() => analyze('SELECT Descricao FROM produto JOIN categoria ON produto.Categoria_idCategoria = categoria.idCategoria'), { kind: 'Semântica' }));
+test('rejeita SQL malformado', () => assert.throws(() => analyze('SELECT Nome cliente'), { kind: 'Sintática' }));
+test('aceita dois JOINs', () => assert.equal(analyze('SELECT cliente.Nome, pedido.DataPedido, status.Descricao FROM cliente JOIN pedido ON cliente.idCliente = pedido.Cliente_idCliente JOIN status ON pedido.Status_idStatus = status.idStatus').valida, true));
+test('rejeita OR (fora do escopo)', () => assert.throws(() => analyze('SELECT Nome FROM cliente WHERE idCliente = 1 OR idCliente = 2'), { kind: 'Sintática' }));

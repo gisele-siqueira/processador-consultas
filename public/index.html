@@ -1,0 +1,6 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Processador de Consultas — HU1 a HU5</title><link rel="stylesheet" href="/style.css"></head>
+<body><main><h1>Processador de Consultas</h1><p>HU1 · Validação SQL | HU2 · Álgebra relacional | HU3 · Grafo original | HU4 · Otimização | HU5 · Plano de execução</p><label for="sql">Consulta SQL</label><textarea id="sql" spellcheck="false">SELECT cliente.Nome, pedido.DataPedido
+FROM cliente
+JOIN pedido ON cliente.idCliente = pedido.Cliente_idCliente
+WHERE pedido.ValorTotalPedido > 500;</textarea><button id="analisar">Analisar</button><section aria-live="polite" id="resultado"></section></main><script src="/script.js"></script></body></html>
